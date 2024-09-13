@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -17,6 +16,45 @@ model User {
   oauth_id     String
   coins        Int            @default(50) @db.Integer
   created_at   DateTime       @default(now())
+  Summary      Summary[]
+  CoinSpend    CoinSpend[]
+  Transactions Transactions[]
 
   @@map("users")
+}
+
+model Summary {
+  id         String      @id @default(uuid()) @db.Uuid
+  user       User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id    Int
+  title      String
+  url        String
+  response   String?      @db.Text
+  created_at DateTime    @default(now())
+  CoinSpend  CoinSpend[]
+
+  @@index([created_at, url])
+  @@map("chats")
+}
+
+model CoinSpend {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id    Int
+  summary    Summary  @relation(fields: [summary_id], references: [id])
+  summary_id String   @db.Uuid
+  created_at DateTime @default(now())
+
+  @@map("coin_spend")
+}
+
+model Transactions {
+  id         String   @id @default(uuid()) @db.Uuid
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id    Int
+  amount     Int      @default(0) @db.Integer
+  status     Int      @default(2) @db.SmallInt
+  created_at DateTime @default(now())
+
+  @@map("transactions")
 }
