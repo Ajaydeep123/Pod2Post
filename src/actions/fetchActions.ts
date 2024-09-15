@@ -77,3 +77,18 @@ export async function getSummary(id: string): Promise<SummaryType | null> {
     ["coinsSpend"],
     { revalidate: 60 * 60, tags: ["coinsSpend"] }
   );
+
+  export const getTransactions = unstable_cache(
+    async (user_id: number | string) => {
+      return await prisma.transactions.findMany({
+        where: {
+          user_id: Number(user_id),
+        },
+        orderBy: {
+          created_at: "desc",
+        },
+      });
+    },
+    ["transactions"],
+    { revalidate: 60 * 60, tags: ["transactions"] }
+  );

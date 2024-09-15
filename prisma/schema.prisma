@@ -58,3 +58,15 @@ model Transactions {
 
   @@map("transactions")
 }
+
+model Products {
+  id         Int      @id @default(autoincrement())
+  name       String   @unique @db.VarChar(30)
+  price_id   String   @db.VarChar(191)
+  product_id String   @db.VarChar(191)
+  currency   String   @db.VarChar(10)
+  amount     Int
+  created_at DateTime @default(now())
+
+  @@map("products")
+}
