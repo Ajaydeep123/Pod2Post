@@ -11,7 +11,7 @@ import { authOptions, CustomSession } from "../auth/[...nextauth]/options";
 import { getUserCoins } from "@/actions/fetchActions";
 import { coinsSpend, minusCoins, updateSummary } from "@/actions/commonActions";
 import prisma from "@/lib/db.config";
-
+import { groqModal } from "@/lib/langchain";
 interface SummarizePayload {
   url: string;
   id: string;
@@ -76,12 +76,12 @@ export async function POST(req: NextRequest) {
     }
 
     const splitter = new TokenTextSplitter({
-      chunkSize: 15000,
+      chunkSize: 8000,
       chunkOverlap: 250,
     });
     const docsSummary = await splitter.splitDocuments(text);
     const summaryPrompt = PromptTemplate.fromTemplate(summaryTemplate);
-    const summaryChain = loadSummarizationChain(gptModal, {
+    const summaryChain = loadSummarizationChain(groqModal, {
       type: "map_reduce",
       verbose: true,
       combinePrompt: summaryPrompt,
