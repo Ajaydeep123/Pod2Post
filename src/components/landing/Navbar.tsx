@@ -7,15 +7,15 @@ import Link from "next/link";
 
 export default function Navbar({ user }: { user?: CustomUser }) {
   return (
-    <nav className="bg-white shadow-sm">
+    <nav className="bg-white shadow-sm antialiased">
       <div className="container mx-auto flex justify-between items-center p-6">
         <div className="flex items-center space-x-2">
           <Image src="/images/icon_192.png" width={40} height={40} alt="lgo" />
-          <h1 className="text-3xl font-extrabold ">Pod2Post</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Pod2Post</h1>
         </div>
 
         <div className="space-x-4">
-          <Button variant="ghost">Pricing</Button>
+          <Button variant="ghost" className="hidden md:inline-flex">Pricing</Button>
           {user ? (
             <Link href="/dashboard">
               <Button>Dashboard</Button>

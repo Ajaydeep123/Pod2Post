@@ -22,7 +22,7 @@ export default function LoginModal() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" className="ml-4">
+        <Button className="ml-4 antialiased">
           Login / Sign up
         </Button>
       </DialogTrigger>
@@ -31,11 +31,11 @@ export default function LoginModal() {
           <DialogTitle>Login/Signup</DialogTitle>
         </DialogHeader>
         <div className="text-center">
-          <h1 className="text-3xl font-extrabold bg-gradient-to-r from-blue-500 to-indigo-600 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-extrabold bg-gradient-to-r ">
             Pod2Post
           </h1>
         </div>
-        <Button variant="outline" onClick={handleGoogleLogin}>
+        <Button variant="outline" size="sm" onClick={handleGoogleLogin}>
           <Image
             src="/images/google.png"
             className=" mr-4"

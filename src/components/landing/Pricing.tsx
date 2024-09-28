@@ -35,7 +35,7 @@ export default function Pricing({ user }: { user?: CustomUser }) {
   return (
     <section className="py-24">
       <div className="container mx-auto">
-        <h2 className="text-3xl font-bold text-center ">
+        <h2 className="text-xl md:text-3xl md:text-5xl tracking-tighter lg:max-w-xl font-regular">
           Simple, Transparent Pricing
         </h2>
         <p className="text-2xl text-indigo-500 font-bold text-center mb-12">
