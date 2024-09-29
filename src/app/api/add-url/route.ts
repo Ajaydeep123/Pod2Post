@@ -47,8 +47,10 @@ export async function POST(req: NextRequest) {
         {
           message:
             "No Transcript available for this video.Plese try another video",
+            error: error instanceof Error ? error.message : String(error),
+
         },
-        { status: 404 }
+        { status: 500 }
       );
     }
 
