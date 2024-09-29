@@ -7,68 +7,48 @@ export interface CustomSession {
   user?: CustomUser;
   expires: ISODateString;
 }
-export interface CustomUser {
-  id?: string | null;
-  name?: string | null;
-  email?: string | null;
-  image?: string | null;
-  provider?: string | null;
+
+export interface CustomUser extends Omit<User, 'id'> {
+  id?: string;
+  provider?: string;
 }
+
 export const authOptions: AuthOptions = {
-  pages: {
-    signIn: "/",
-  },
+  pages: { signIn: "/" },
   callbacks: {
     async signIn({ user, account }) {
       try {
-        const findUser = await prisma.user.findUnique({
-          where: {
-            email: user.email!,
-          },
-        });
-        if (findUser) {
-          user.id = findUser?.id.toString();
-          return true;
+        if (!user.email || !user.name || !account?.providerAccountId || !account?.provider) {
+          return false;
         }
-
-        const data = await prisma.user.create({
-          data: {
-            email: user.email!,
-            name: user.name!,
-            oauth_id: account?.providerAccountId!,
-            provider: account?.provider!,
-            image: user?.image,
+        
+        const findUser = await prisma.user.upsert({
+          where: { email: user.email },
+          update: {},
+          create: {
+            email: user.email,
+            name: user.name,
+            oauth_id: account.providerAccountId,
+            provider: account.provider,
+            image: user.image ?? null,
           },
         });
-        user.id = data?.id.toString();
+        user.id = findUser.id.toString();
         return true;
       } catch (error) {
-        console.log("The error is", error);
+        console.error("Sign-in error:", error);
         return false;
       }
     },
-
     async jwt({ token, user }) {
-      if (user) {
-        token.user = user;
-      }
+      if (user) token.user = user;
       return token;
     },
-
-    async session({
-      session,
-      token,
-      user,
-    }: {
-      session: CustomSession;
-      token: JWT;
-      user: User;
-    }) {
+    async session({ session, token }: { session: CustomSession; token: JWT }) {
       session.user = token.user as CustomUser;
       return session;
     },
   },
-
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,

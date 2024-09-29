@@ -5,7 +5,7 @@ import { TokenTextSplitter } from "langchain/text_splitter";
 import { Document } from "@langchain/core/documents";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { summaryTemplate } from "@/lib/prompts";
-import { gptModal } from "@/lib/langchain";
+// import { gptModal } from "@/lib/langchain";
 import { getServerSession } from "next-auth";
 import { authOptions, CustomSession } from "../auth/[...nextauth]/options";
 import { getUserCoins } from "@/actions/fetchActions";
@@ -20,57 +20,46 @@ interface SummarizePayload {
 export async function POST(req: NextRequest) {
   try {
     const session: CustomSession | null = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ message: "UnAuthorized" }, { status: 401 });
+    if (!session?.user?.id) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
     const body: SummarizePayload = await req.json();
 
-    // * Check if user has sufficient coins or not
-    const userConis = await getUserCoins(session?.user?.id!);
-    if (userConis === null || (userConis?.coins && userConis.coins < 10)) {
+    // Check if user has sufficient coins
+    const userCoins = await getUserCoins(session.user.id);
+    if (userCoins === null || (userCoins.coins && userCoins.coins < 10)) {
       return NextResponse.json(
-        {
-          message:
-            "You don't have sufficient coins for summary.Please add your coins.",
-        },
+        { message: "Insufficient coins for summary. Please add coins." },
         { status: 400 }
       );
     }
 
-    // * Check if is there any summary available for URL
+    // Check for existing summary
     const oldSummary = await prisma.summary.findFirst({
-      select: {
-        response: true,
-      },
-      where: {
-        url: body.url,
-      },
+      select: { response: true },
+      where: { url: body.url },
     });
 
-    if (oldSummary != null && oldSummary.response) {
-      // * Do things
-      await minusCoins(session?.user?.id!);
-      await coinsSpend(session?.user?.id!, body?.id!);
+    if (oldSummary?.response) {
+      await minusCoins(session.user.id);
+      await coinsSpend(session.user.id, body.id);
       return NextResponse.json({
         message: "Podcast video Summary",
         data: oldSummary.response,
       });
     }
 
-    // * extract video transcript
-    let text: Document<Record<string, any>>[];
+    // Extract video transcript
+    let text: Document<Record<string, unknown>>[];
     try {
-      const loader = YoutubeLoader.createFromUrl(body.url!, {
+      const loader = YoutubeLoader.createFromUrl(body.url, {
         language: "en",
         addVideoInfo: true,
       });
       text = await loader.load();
     } catch (error) {
       return NextResponse.json(
-        {
-          message:
-            "No Transcript available for this video.Plese try another video",
-        },
+        { message: "No transcript available. Please try another video." },
         { status: 404 }
       );
     }
@@ -88,19 +77,19 @@ export async function POST(req: NextRequest) {
     });
     const res = await summaryChain.invoke({ input_documents: docsSummary });
 
-    // * Do things
-    await minusCoins(session?.user?.id!);
-    await coinsSpend(session?.user?.id!, body?.id!);
-    await updateSummary(body?.id!, res?.text);
+    // Update user coins and save summary
+    await minusCoins(session.user.id);
+    await coinsSpend(session.user.id, body.id);
+    await updateSummary(body.id, res?.text ?? '');
 
     return NextResponse.json({
       message: "Podcast video Summary",
       data: res?.text,
     });
   } catch (error) {
-    console.log("The error is", error);
+    console.error("Error:", error);
     return NextResponse.json(
-      { message: "Something went wrong.please try again!" },
+      { message: "Something went wrong. Please try again!" },
       { status: 500 }
     );
   }

@@ -10,8 +10,8 @@ interface SessionPayload {
 
 export async function POST(req: NextRequest) {
   const session: CustomSession | null = await getServerSession(authOptions);
-  if (!session) {
-    return NextResponse.json({ message: "UnAuthorized" }, { status: 401 });
+  if (!session?.user?.id) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
   try {
     const body: SessionPayload = await req.json();
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
 
     if (!product) {
       return NextResponse.json(
-        { message: "No product found.please check you passed correct product" },
+        { message: "No product found. Please check you passed correct product" },
         { status: 404 }
       );
     }
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
     // * Create Transaction
     const transaction = await prisma.transactions.create({
       data: {
-        user_id: Number(session?.user?.id!),
+        user_id: Number(session.user.id),
         amount: product.amount,
       },
     });
@@ -60,9 +60,9 @@ export async function POST(req: NextRequest) {
       id: stripeSession?.id,
     });
   } catch (error) {
-    console.log("The error is", error);
+    console.error("Error:", error);
     return NextResponse.json(
-      { message: "Something went wrong.please try again!" },
+      { message: "Something went wrong. Please try again!" },
       { status: 500 }
     );
   }

@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Loading from "../common/Loading"
 import { clearCache } from "@/actions/commonActions";
+import { AddUrlErrorType, SummaryType } from "@/types";
 
 export default function UrlInput({ user }: { user: CustomUser }) {
   const router = useRouter();

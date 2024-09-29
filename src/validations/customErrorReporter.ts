@@ -9,15 +9,14 @@ export class CustomErrorReporter implements ErrorReporterContract {
   hasErrors: boolean = false;
 
   /**
-   * A collection of errors. Feel free to give accurate types
-   * to this property
+   * A collection of errors.
    */
-  errors: any = {};
+  errors: Record<string, string> = {};
 
   /**
-   * VineJS call the report method
+   * VineJS calls the report method
    */
-  report(message: string, rule: string, field: FieldContext, meta?: any) {
+  report(message: string, rule: string, field: FieldContext): void {
     this.hasErrors = true;
 
     /**

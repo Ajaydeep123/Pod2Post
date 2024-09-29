@@ -1,6 +1,6 @@
 import React from "react";
 import Navbar from "@/components/landing/Navbar";
-import Pricing from "@/components/landing/Pricing";
+// import Pricing from "@/components/landing/Pricing";
 import Footer from "@/components/landing/Footer";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { authOptions, CustomSession } from "./api/auth/[...nextauth]/options";
@@ -13,7 +13,7 @@ export default async function Home() {
   return (
     <>
       <Navbar user={session?.user} />
-      <HeroSection user={session?.user}/>
+      <HeroSection />
       <Showcase />
       {/* <Pricing user={session?.user} /> */}
       <NewPricing user={session?.user} />

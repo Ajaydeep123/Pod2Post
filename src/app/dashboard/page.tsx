@@ -6,14 +6,20 @@ import { getUserCoins, getOldSummaries } from "@/actions/fetchActions";
 import UrlInput from "@/components/dashboard/UrlInput";
 import OldSummaryCard from "@/components/dashboard/OldSummaryCard";
 
-export default async function dashboard() {
+export default async function Dashboard() {
   const session: CustomSession | null = await getServerSession(authOptions);
-    const oldSummaries = await getOldSummaries(Number(session?.user?.id!));
-  const userCoins = await getUserCoins(session?.user?.id!);
+  const oldSummaries = session?.user?.id ? await getOldSummaries(Number(session.user.id)) : [];
+  const userCoins = session?.user?.id ? await getUserCoins(Number(session.user.id)) : null;
+
+  if (!session?.user) {
+    // Handle the case where the user is not authenticated
+    return <div>Please log in to view your dashboard.</div>;
+  }
+
   return (
     <div className="container">
-      <DashNav user={session?.user!} userCoins={userCoins} />
-      <UrlInput user={session?.user!} />
+      <DashNav user={session.user} userCoins={userCoins} />
+      <UrlInput user={session.user} />
 
       <div className="mt-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

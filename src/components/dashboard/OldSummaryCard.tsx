@@ -1,4 +1,5 @@
 "use client";
+import { SummaryType } from "@/types";
 import Link from "next/link";
 import React from "react";
 

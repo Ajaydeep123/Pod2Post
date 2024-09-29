@@ -1,11 +1,11 @@
-import { MoveRight, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-import { CustomUser } from "@/app/api/auth/[...nextauth]/options";
-import LoginModal from "@/components/auth/LoginModal";
+// import { CustomUser } from "@/app/api/auth/[...nextauth]/options";
+// import LoginModal from "@/components/auth/LoginModal";
 
-export const HeroSection = ({ user }: { user?: CustomUser }) => (
+export const HeroSection = () => (
   <div className="w-full py-20 lg:py-40">
     <div className="container mx-auto">
       <div className="grid grid-cols-1 gap-8 items-center md:grid-cols-2 mb-16">
@@ -18,7 +18,7 @@ export const HeroSection = ({ user }: { user?: CustomUser }) => (
               Unlock the Power of Content in Minutes
             </h1>
             <p className="text-xl leading-relaxed tracking-tight text-muted-foreground max-w-md text-left">
-              Don't have time to watch hours of videos or listen to long podcasts? Our AI-powered app summarizes YouTube videos and podcasts, giving you the key insights in a fraction of the time.
+              Don&apos;t have time to watch hours of videos or listen to long podcasts? Our AI-powered app summarizes YouTube videos and podcasts, giving you the key insights in a fraction of the time.
             </p>
           </div>
           <div className="flex flex-row gap-4">

@@ -19,12 +19,16 @@ export default async function Summarize({
     return notFound();
   }
   const session: CustomSession | null = await getServerSession(authOptions);
-  const userCoins = await getUserCoins(session?.user?.id!);
+  const userCoins = session?.user?.id ? await getUserCoins(session.user.id) : null;
 
+  if (!session?.user) {
+    // Handle the case where the user is not authenticated
+    return <div>Please log in to view the summary.</div>;
+  }
 
   return (
     <div className="container">
-      <DashNav user={session?.user!} userCoins={userCoins} />
+      <DashNav user={session.user} userCoins={userCoins} />
       <SummaryBase summary={summary} />
     </div>
   );

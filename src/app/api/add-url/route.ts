@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    let text: Document<Record<string, any>>[];
+    let text: Document[];
     try {
       const loader = YoutubeLoader.createFromUrl(payload.url!, {
         language: "en",
