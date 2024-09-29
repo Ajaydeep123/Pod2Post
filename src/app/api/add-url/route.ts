@@ -34,21 +34,20 @@ export async function POST(req: NextRequest) {
         language: "en",
         addVideoInfo: true,
       });
-      console.log("loader", loader);
       console.log("Attempting to load video content");
       text = await loader.load();
-      console.log("text", text);
       console.log("Video content loaded successfully");
     } catch (error) {
-      console.log("Error loading video content:", error);
-      return NextResponse.json(
-        {
-          message:
-            "No Transcript available for this video.Plese try another video",
-            error: error instanceof Error ? error.message : String(error),
-        },
-        { status: 404 }
-      );
+      console.error("Error loading video content:", error);
+      let errorMessage = "Failed to load video content. Please try another video.";
+      if (error instanceof Error) {
+        if (error.message.includes("Transcript is disabled")) {
+          errorMessage = "This video does not have an available transcript. Please try a different video.";
+        } else if (error.message.includes("Video unavailable")) {
+          errorMessage = "The video is unavailable or may be private. Please check the URL and try again.";
+        }
+      }
+      return NextResponse.json({ message: errorMessage }, { status: 404 });
     }
 
     const summary = await prisma.summary.create({
