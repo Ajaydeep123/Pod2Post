@@ -10,8 +10,8 @@
     "vercel-build": "node -e \"console.log('Vercel Node.js version:', process.version)\" && prisma generate && next build"
   },
   "dependencies": {
-    "@langchain/community": "^0.2.33",
-    "@langchain/core": "^0.2.34",
+    "@langchain/community": "^0.2.31",
+    "@langchain/core": "^0.2.28",
     "@langchain/google-genai": "^0.0.26",
     "@langchain/groq": "^0.1.1",
     "@langchain/openai": "^0.2.7",
