@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
     "start": "next start",
+    "build": "next build",
     "lint": "next lint",
-    "vercel-build": "prisma generate && next build"
+    "vercel-build": "node -e \"console.log('Vercel Node.js version:', process.version)\" && prisma generate && next build"
   },
   "dependencies": {
     "@langchain/community": "^0.2.33",
