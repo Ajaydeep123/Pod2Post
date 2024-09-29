@@ -37,9 +37,12 @@ export async function POST(req: NextRequest) {
         addVideoInfo: true,
       });
       console.log("loader", loader);
+      console.log("Attempting to load video content");
       text = await loader.load();
       console.log("text", text);
+      console.log("Video content loaded successfully");
     } catch (error) {
+      console.log("Error loading video content:", error);
       return NextResponse.json(
         {
           message:
