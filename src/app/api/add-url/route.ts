@@ -16,7 +16,6 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const validator = vine.compile(summarySchema);
     const payload = await validator.validate(body);
-    console.log("payload", payload);
     // * Check if user has sufficient coins or not
     const userCoins = await getUserCoins(payload.user_id);
     if (userCoins === null || (userCoins?.coins && userCoins.coins < 10)) {
@@ -30,7 +29,6 @@ export async function POST(req: NextRequest) {
     }
 
     let text: Document[];
-    console.log("payload :->", payload);
     try {
       const loader = YoutubeLoader.createFromUrl(payload.url!, {
         language: "en",
@@ -48,9 +46,8 @@ export async function POST(req: NextRequest) {
           message:
             "No Transcript available for this video.Plese try another video",
             error: error instanceof Error ? error.message : String(error),
-
         },
-        { status: 500 }
+        { status: 404 }
       );
     }
 
