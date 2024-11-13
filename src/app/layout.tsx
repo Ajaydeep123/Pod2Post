@@ -17,6 +17,9 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "Pod2Post",
   description: "Summarize your favorite podcast episodes to text in one click.",
+  icons: {
+    icon: "/images/mic.svg",
+  },
 };
 
 export default function RootLayout({

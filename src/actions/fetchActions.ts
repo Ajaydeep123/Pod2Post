@@ -1,6 +1,7 @@
 "use server"
 
 import prisma from "@/lib/db.config"
+import { SummaryType } from "@/types"
 import { unstable_cache } from "next/cache"
 
 export const getUserCoins = unstable_cache(

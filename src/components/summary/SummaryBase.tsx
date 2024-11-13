@@ -5,19 +5,20 @@ import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
 import Markdown from "react-markdown";
 import { clearCache } from "@/actions/commonActions";
-
+import { SummaryType } from "@/types";
 export default function SummaryBase({ summary }: { summary: SummaryType | null }) {
   const [loading, setLoading] = useState(true);
   const [response, setResponse] = useState("");
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (summary?.response) {
-      setResponse(summary?.response!);
+      setResponse(summary?.response);
       setLoading(false);
     } else {
       summarize();
     }
-  }, [summary]);
+  }, [summary?.response]);
 
   const summarize = async () => {
     try {
@@ -39,7 +40,8 @@ export default function SummaryBase({ summary }: { summary: SummaryType | null }
     } catch (error) {
       setLoading(false);
       if (error instanceof AxiosError) {
-        if ([500, 401, 400].includes(error.response?.status!)) {
+        const status = error.response?.status;
+        if (status && [500, 401, 400].includes(status)) {
           toast.error(error.response?.data?.message);
         } else {
           toast.error("Something not right!");
@@ -47,6 +49,7 @@ export default function SummaryBase({ summary }: { summary: SummaryType | null }
       }
     }
   };
+
 
   return (
     <div className="flex items-center flex-col w-full">

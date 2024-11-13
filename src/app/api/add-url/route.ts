@@ -16,7 +16,6 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const validator = vine.compile(summarySchema);
     const payload = await validator.validate(body);
-
     // * Check if user has sufficient coins or not
     const userCoins = await getUserCoins(payload.user_id);
     if (userCoins === null || (userCoins?.coins && userCoins.coins < 10)) {
@@ -29,21 +28,26 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    let text: Document<Record<string, any>>[];
+    let text: Document[];
     try {
       const loader = YoutubeLoader.createFromUrl(payload.url!, {
         language: "en",
         addVideoInfo: true,
       });
+      console.log("Attempting to load video content");
       text = await loader.load();
+      console.log("Video content loaded successfully");
     } catch (error) {
-      return NextResponse.json(
-        {
-          message:
-            "No Transcript available for this video.Plese try another video",
-        },
-        { status: 404 }
-      );
+      console.error("Error loading video content:", error);
+      let errorMessage = "Failed to load video content. Please try another video.";
+      if (error instanceof Error) {
+        if (error.message.includes("Transcript is disabled")) {
+          errorMessage = "This video does not have an available transcript. Please try a different video.";
+        } else if (error.message.includes("Video unavailable")) {
+          errorMessage = "The video is unavailable or may be private. Please check the URL and try again.";
+        }
+      }
+      return NextResponse.json({ message: errorMessage }, { status: 404 });
     }
 
     const summary = await prisma.summary.create({

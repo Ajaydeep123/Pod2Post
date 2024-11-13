@@ -10,11 +10,17 @@ import Link from "next/link";
 
 export default async function CoinsSpend() {
   const session: CustomSession | null = await getServerSession(authOptions);
-  const userCoins = await getUserCoins(session?.user?.id!);
-  const coinsSpends = await getCoinsSpend(session?.user?.id!);
+  const userCoins = session?.user?.id ? await getUserCoins(session.user.id) : null;
+  const coinsSpends = session?.user?.id ? await getCoinsSpend(session.user.id) : null;
+
+  if (!session?.user) {
+    // Handle the case where the user is not authenticated
+    return <div>Please log in to view your coins spend history.</div>;
+  }
+
   return (
     <div className="container">
-      <DashNav user={session?.user!} userCoins={userCoins} />
+      <DashNav user={session.user} userCoins={userCoins} />
       <div className="text-center w-full">
         <h1 className="text-2xl font-bold mb-4">Coins Spend History</h1>
 

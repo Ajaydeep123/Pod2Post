@@ -1,6 +1,6 @@
 "use server";
 import prisma from "@/lib/db.config";
-import { revalidateTag, unstable_cache } from "next/cache";
+import { revalidateTag} from "next/cache";
 
 export async function updateSummary(id: string, data: string): Promise<void> {
   await prisma.summary.update({
