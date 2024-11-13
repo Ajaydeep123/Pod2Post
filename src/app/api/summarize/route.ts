@@ -5,7 +5,6 @@ import { TokenTextSplitter } from "langchain/text_splitter";
 import { Document } from "@langchain/core/documents";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { summaryTemplate } from "@/lib/prompts";
-import { gptModal } from "@/lib/langchain";
 import { getServerSession } from "next-auth";
 import { authOptions, CustomSession } from "../auth/[...nextauth]/options";
 import { getUserCoins } from "@/actions/fetchActions";
@@ -76,8 +75,8 @@ export async function POST(req: NextRequest) {
     }
 
     const splitter = new TokenTextSplitter({
-      chunkSize: 8000,
-      chunkOverlap: 250,
+      chunkSize: 5000,
+      chunkOverlap: 200,
     });
     const docsSummary = await splitter.splitDocuments(text);
     const summaryPrompt = PromptTemplate.fromTemplate(summaryTemplate);
